@@ -1,3 +1,5 @@
+./philo 5 800 200 200 5
+
 # 🧠 Philosophers
 
 This project is part of the 42 curriculum and introduces fundamental concepts of **concurrent programming** using **threads** and **mutexes** in C.

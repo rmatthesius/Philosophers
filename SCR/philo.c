@@ -12,15 +12,18 @@
 
 #include "../philo.h"
 
+// Wartet eine Mindestzeit in Millisekunden.
 void	my_sleep(size_t time)
 {
 	size_t	new_time;
 
+	// Die vergangene Zeit wiederholt bis zum Ablauf der Dauer messen.
 	new_time = get_time();
 	while (get_time() - new_time <= time)
 		usleep(1000);
 }
 
+// Behandelt den Sonderfall mit genau einem Philosophen.
 void	one_philo(t_philo *philo)
 {
 	philo->start_time = get_time();
@@ -28,9 +31,12 @@ void	one_philo(t_philo *philo)
 	philo->running = false;
 }
 
+// Führt eine Mahlzeit aus und aktualisiert den Mahlzeitenzähler.
 void	eating(t_philo *philo)
 {
 	take_forks(philo);
+
+	// Die letzte Mahlzeit unter dem Mahlzeiten-Mutex aktualisieren.
 	pthread_mutex_lock(philo->meal_lock);
 	philo->last_meal = get_time();
 	pthread_mutex_unlock(philo->meal_lock);
@@ -42,8 +48,10 @@ void	eating(t_philo *philo)
 	pthread_mutex_unlock(philo->prog->switch_flag);
 }
 
+// Führt den essenden, schlafenden und denkenden Hauptzyklus aus.
 void	*philo_thread_part2(t_philo *philo)
 {
+	// Aktivstatus setzen und ungeraden Philosophen leicht verzögern.
 	pthread_mutex_lock(philo->prog->switch_flag);
 	philo->running = true;
 	pthread_mutex_unlock(philo->prog->switch_flag);
@@ -52,6 +60,7 @@ void	*philo_thread_part2(t_philo *philo)
 	pthread_mutex_lock(philo->prog->switch_flag);
 	while (philo->prog->end == false)
 	{
+		// Essen, schlafen und denken wiederholen, bis das Programm endet.
 		pthread_mutex_unlock(philo->prog->switch_flag);
 		eating(philo);
 		print_uptate("is sleeping", philo);
@@ -66,11 +75,14 @@ void	*philo_thread_part2(t_philo *philo)
 	return (NULL);
 }
 
+// Wartet auf den Start und startet danach die Philosophenlogik.
 void	*philo_thread(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+
+	// Auf das gemeinsame Startsignal des Monitors warten.
 	while (1)
 	{
 		pthread_mutex_lock(philo->prog->switch_flag);

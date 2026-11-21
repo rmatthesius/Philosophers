@@ -25,8 +25,10 @@
 #  define PHIL_MAX 250
 # endif
 
+// Verweist auf den Program zustand aus den Philosophenstrukturen.
 typedef struct s_programm	t_programm;
 
+// Speichert den Zustand und die Ressourcen eines einzelnen Philosophen.
 typedef struct s_philo
 {
 	size_t			time_to_eat;
@@ -43,6 +45,7 @@ typedef struct s_philo
 	t_programm		*prog;
 }	t_philo;
 
+// Speichert die globale Konfiguration, Threads und gemeinsamen Mutexe.
 typedef struct s_programm
 {
 	size_t			nb_philos;
@@ -59,24 +62,33 @@ typedef struct s_programm
 	pthread_mutex_t	switch_flag[1];
 }	t_programm;
 
+// Hilfsfunktionen für Ausgabe, Zeitmessung und Zahlenkonvertierung.
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(size_t n);
 size_t	get_time(void);
 size_t	atosize_t(char *s);
+
+// Ausgaben und Gabeloperationen mit synchronisiertem Zugriff.
 void	print_meals_eaten_msg(t_programm *prog, t_philo *philo);
 void	print_uptate(char *str, t_philo *philo);
 void	print_dead_msg(t_philo *philo);
 void	take_forks(t_philo *philo);
 void	put_forks(t_philo *philo);
+
+// Philosophenlogik und Überwachungslogik.
 void	one_philo(t_philo *philo);
 void	*philo_thread(void *arg);
 void	*monitor_thread(void *arg);
+
+// Zustandsprüfungen und Wartezeit.
 int		meals_eaten(t_programm *prog);
 int		is_dead(t_programm *prog);
 int		is_nrunning(t_programm *prog);
 int		is_running(t_programm *prog);
 void	my_sleep(size_t time);
+
+// Initialisierung und Aufräumen der Programmdaten.
 int		init_programm(t_programm *prog, int argc, char **argv);
 int		init_philos(t_programm *prog, char **argv);
 void	free_mutex_forks(t_programm *prog, int i);

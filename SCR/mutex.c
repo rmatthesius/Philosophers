@@ -12,8 +12,10 @@
 
 #include "../philo.h"
 
+// Gibt eine Meldung über die Anzahl gegessener Mahlzeiten aus.
 void	print_meals_eaten_msg(t_programm *prog, t_philo *philo)
 {
+	// Ausgabe unter dem gemeinsamen Ausgabe-Mutex sperren.
 	pthread_mutex_lock(prog->stfu);
 	ft_putnbr_fd(philo->id);
 	ft_putstr_fd(" has eaten ", 1);
@@ -22,12 +24,15 @@ void	print_meals_eaten_msg(t_programm *prog, t_philo *philo)
 	pthread_mutex_unlock(prog->stfu);
 }
 
+// Gibt den aktuellen Zustand eines lebenden Philosophen aus.
 void	print_uptate(char *str, t_philo *philo)
 {
+	// Ausgabe und Programmende gemeinsam gegen Änderungen sperren.
 	pthread_mutex_lock(philo->prog->stfu);
 	pthread_mutex_lock(philo->prog->switch_flag);
 	if (philo->prog->end != true)
 	{
+		// Verstrichene Zeit, ID und Aktionstext ausgeben.
 		ft_putnbr_fd(get_time() - philo->start_time);
 		ft_putstr_fd(" ", 1);
 		ft_putnbr_fd(philo->id);
@@ -38,8 +43,10 @@ void	print_uptate(char *str, t_philo *philo)
 	pthread_mutex_unlock(philo->prog->switch_flag);
 }
 
+// Gibt die Todesmeldung eines Philosophen aus.
 void	print_dead_msg(t_philo *philo)
 {
+	// Todesmeldung unter dem gemeinsamen Ausgabe-Mutex schreiben.
 	pthread_mutex_lock(philo->prog->stfu);
 	ft_putnbr_fd(get_time() - philo->start_time);
 	ft_putstr_fd(" ", 1);
@@ -50,6 +57,7 @@ void	print_dead_msg(t_philo *philo)
 	pthread_mutex_unlock(philo->meal_lock);
 }
 
+// Sperrt die rechte Gabel und danach die linke Gabel.
 void	take_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->r_fork);
@@ -58,6 +66,7 @@ void	take_forks(t_philo *philo)
 	print_uptate("has taken a fork", philo);
 }
 
+// Gibt beide Gabeln eines Philosophen wieder frei.
 void	put_forks(t_philo *philo)
 {
 	pthread_mutex_unlock(philo->l_fork);
